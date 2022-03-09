@@ -1,0 +1,12 @@
+region                  = "us-east-1"
+vpc_cidr                = "10.0.0.0/16"
+env                     = "dev"
+projectname             = "ant-march22"
+owner                   = "devops"
+public_subnet_cidrs     = ["10.0.11.0/24", "10.0.12.0/24"]
+private_subnet_cidrs    = ["10.0.21.0/24", "10.0.22.0/24"]
+db-private_subnet_cidrs = ["10.0.31.0/24", "10.0.32.0/24"]
+allow_port_list      = {
+    "prod" = ["80", "443"]
+    "dev"  = ["80", "443", "8080", "22"]
+  }

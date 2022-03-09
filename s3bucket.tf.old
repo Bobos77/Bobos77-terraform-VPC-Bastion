@@ -1,0 +1,38 @@
+resource "aws_kms_key" "ant-key-forbucket" {
+  description             = "This key is used to encrypt bucket objects"
+  deletion_window_in_days = 10
+}
+
+resource "aws_s3_bucket" "ant-s3bucket-terraform-projects" {
+  bucket = "ant-s3bucket-terraform-projects"
+
+  tags = {
+    Name        = "${var.projectname}-s3bucket-${var.env}"
+    Owner = "${var.owner}"
+    Environment = "${var.env}"
+  }
+}
+
+resource "aws_s3_bucket_acl" "ant-s3bucket-terraform-projects-acl" {
+  bucket = aws_s3_bucket.ant-s3bucket-terraform-projects.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.ant-s3bucket-terraform-projects.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "ant-s3bucket-terraform-projects-encrypt" {
+  bucket = aws_s3_bucket.ant-s3bucket-terraform-projects.bucket
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.ant-key-forbucket.arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+  
+}
